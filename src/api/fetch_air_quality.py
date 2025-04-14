@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import pandas as pd
 import requests
 
 
@@ -11,39 +12,40 @@ HEADERS = {
     'x-api-key': API_KEY
 }
 
+
+# Fetch the responce for the countries endpoint
 def fetch_countries(id: int = None):
-    if id:
-        url = f'{URL}/countries/{id}'
-    else:
-        url = f'{URL}/countries'
+    url = f'{URL}/countries/{id}' if id else f'{URL}/countries'
     responce: requests.Response = requests.get(url, headers=HEADERS)
     if responce.status_code == 200:
         return responce.json()
-    else:
-        return f'Status code {responce.status_code}'
-    
-def fetch_parameters(iso: str = None, countries_id: int = None):
-    parms = {}
-    if iso:
-        parms['iso'] = iso
-    if countries_id:
-        parms['countries_id'] = countries_id
+    return f'Status code {responce.status_code}'
+
+
+# Fetch the responce for the parameters endpoint
+def fetch_parameters():
     url = f'{URL}/parameters'
-    responce: requests.Response = requests.get(url, parms=parms,headers=HEADERS)
+    responce = requests.get(url, headers=HEADERS)
     if responce.status_code == 200:
         return responce.json()
-    else:
-        return f'Status code {responce.status_code}'
+    return f'Status code {responce.status_code}'
     
-def fetch_locations(iso: str = None, countries_id: int = None):
-    parms = {}
-    if iso:
-        parms['iso'] = iso
-    if countries_id:
-        parms['countries_id'] = countries_id
+    
+# Fetch the responce from the location endpoint
+def fetch_location(countries_id: int):
     url = f'{URL}/locations'
-    responce: requests.Response = requests.get(url, parms=parms,headers=HEADERS)
+    params = {'countries_id': countries_id}
+    responce = requests.get(url, params, headers=HEADERS)
     if responce.status_code == 200:
         return responce.json()
-    else:
-        return f'Status code {responce.status_code}'
+    return f'Status code {responce.status_code}'
+
+
+# Fetch the responce from the instruments endpoint
+def fetch_instruments(id: int = None):
+    url = f'{URL}/instuments/{id}' if id else f'{URL}/instruments'
+    responce = requests.get(url, headers=HEADERS)
+    if responce.status_code == 200:
+        return responce.json()
+    return f'Status code {responce.status_code}'
+
